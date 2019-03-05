@@ -1,9 +1,8 @@
 package tea_test
 
 import (
-	"bytes"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -24,8 +23,8 @@ func TestTeaGet(t *testing.T) {
 	res, err := http.Get(ts.URL)
 	assert.Nil(t, err)
 
-	buf := bytes.NewBufferString("")
-	_, err = io.Copy(buf, res.Body)
+	result, err := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
 	assert.Nil(t, err)
-	assert.Equal(t, "Test", buf.String())
+	assert.Equal(t, "Test", string(result))
 }
